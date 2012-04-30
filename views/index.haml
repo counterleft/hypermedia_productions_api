@@ -1,0 +1,150 @@
+!!!
+%head
+  %link{rel: "stylesheet", href: "/docs.css", type: "text/css", media: "screen, projection"}
+  %link{rel: "stylesheet", href: "/css/bootstrap.min.css", type: "text/css", media: "screen, projection"}
+%body
+  #container.container
+    %div.row
+      #sidebar.span3
+        %h3 Developer Docs
+        %ul.unstyled
+          %li
+            %a{:href => "#overview"} Overview
+          %li
+            %a{:href => "#userstories"} User Stories
+          %li
+            %a{:href => "#api"} The API
+            %ul.unstyled.sub
+              %li
+                %a{:href => "#api[media-type]"} Media Type
+              %li
+                %a{:href => "#api[semantic-profile]"} Semantic Profile
+              %li
+                %a{:href => "#api[auth]"} Authentication
+              %li
+                %a{:href => "#api[example-response]"} Example Response
+              %li
+                %a{:href => "#api[building-a-client]"} Building a Client
+
+      #content.span9.offset3
+        %h1 Hypermedia Productions API
+
+        %h2{id: "overview"} Overview
+
+        %p Rob Conery wrote a <a href="http://wekeroad.com/2012/03/03/moving-the-philosophy-into-machinery/">blog post</a> about RESTful design. In it, he asks his readers to create an API based on the design topics discussed within. This page describes such an implementation. The implementation is  based on an API designed by <a href="https://twitter.com/steveklabnik">Steve Klabnik</a> (from his <a href="http://designinghypermediaapis.com">"book"</a>, and yes, even Steve wraps quotes around the word, book).
+
+        %h2{id: "userstories"} User Stories
+
+        %p Rob's requirements are:
+
+        %blockquote Customer comes to the app and logs in with email and password. A token is returned by the server upon successful authentication and a message is also received (like “thanks for logging in”).
+
+        %blockquote Joe User is logged in and wants to see what he can watch. He chooses to browse all productions and can see on the app which ones he is aloud to watch and which ones he isn’t. He then chooses to narrow his selection by category: Microsoft, Ruby, Javascript, Mobile. Once a production is selected, a list of Episodes is displayed with summary information. Joe wants to view Episode 2 of Real World ASP.NET MVC3 – so he selects it. The video starts.
+
+        %blockquote Kelly User watches our stuff on her way to work every day, and when she gets on the train will check and see if we’ve pushed any new episodes recently. A list of 5 episodes comes up – she chooses one, and watches it on her commute.
+
+        %h2{id: "api"} The API
+
+        %p The API entrypoint url is located on this domain at <code>/api</code>. The API responses are <code>json</code> objects.
+
+        %h3{id: "api[media-type]"} Media Type
+
+        %p The API uses a custom defined <code>application/vnd.brian.productions+json</code> media type. The media type is the value of the <code>Content-type</code> header returned on HTTP responses.
+
+        %h3{id: "api[semantic-profile]"} Semantic Profile
+
+        %p The key words "MUST", "MUST NOT", "REQUIRED", "SHALL", "SHALL NOT", "SHOULD", "SHOULD NOT", "RECOMMENDED", "MAY", and "OPTIONAL" in this document are to be interpreted as described in <a href="http://tools.ietf.org/html/rfc2119">RFC 2119</a>.
+
+        %p Sending a HTTP GET Request to <code>/api</code> SHALL return a <code>json</code> object.
+
+        %p The object SHALL contain a <code>productions</code> array, a <code>new_productions</code> array, a <code>forms</code> array and a <code>links</code> array.
+
+        %p The <code>productions</code> array represents all the productions in the application. It MAY be empty. The array elements are each considered a <code>production</code> object.
+
+        %p Each <code>production</code> SHALL contain a <code>category</code> (a string). Each <code>production</code> SHALL contain an array of <code>links</code>. Each <code>link</code> SHALL contain a <code>rel</code> and a <code>href</code>. The <code>rel</code> describes the relationship of the <code>link</code> with respect to the <code>production</code>. For example, <code>link</code> with <code>rel = "episodes"</code> represents the link to the production's episode list.
+
+        %p The <code>new_productions</code> array represents the new productions available in the application. It MAY be empty. The array elements are each considered a <code>production</code> object.
+
+        %p The <code>forms</code> array represents actions that can be performed the productions. It MAY be empty. An action MAY require user input. Each <code>form</code> object contains a <code>rel</code>, <code>href</code>, <code>method</code> and <code>data</code>.
+
+        %p The <code>links</code> array contains related links.
+
+        %h3{id: "api[auth]"} Authentication
+
+        %p <em>TODO</em>
+
+        %h3{id: "api[example-response]"} Example Response
+
+        %pre
+          :preserve
+            {
+              "productions": [
+                {
+                  "category": "Music",
+                  "links": [
+                    {
+                      "rel": "episodes",
+                      "href": "/api/production/music"
+                    }
+                  ]
+                },
+                {
+                  "category": "Code",
+                  "links": [
+                    {
+                      "rel": "episodes",
+                      "href": "/api/production/code"
+                    }
+                  ]
+                }
+              ],
+              "new_productions": [
+                {
+                  "category": "Code",
+                  "links": [
+                    {
+                      "rel": "episodes",
+                      "href": "/api/production/code"
+                    }
+                  ]
+                }
+              ],
+              "forms": [
+                {
+                  "rel": "category_filter",
+                  "href": "/api/productions/filtered",
+                  "method": "get",
+                  "data": [
+                    {
+                      "name": "category",
+                      "value": ""
+                    }
+                  ]
+                }
+              ],
+              "links": [
+                {
+                  "rel": "root",
+                  "href": "/"
+                }
+              ]
+            }
+
+        %h3{id: "api[building-a-client]"} Building a Client
+
+        %p <em>TODO</em>
+
+        %h2 Thank You
+
+        %p I'd like to thank:
+
+        %ul
+          %li Steve Klabnik for his thoughts on Hypermedia APIs. Check out his <a href="http://designinghypermediaapis.com">"book"</a>!)
+          %li Rob Conery. Check out his <a href="http://wekeroad.com">blog</a>)
+          %li <a href="http://heroku.com">Heroku</a> for being the easiest ruby platform-as-a-service I've ever used.
+          %li The <a href="http://http://rubyrogues.com/">Ruby Rogues</a> for creating an enjoyable and funny ruby developer podcast.
+
+  %footer
+    %div.container
+      %div.row
+        %p A proof-of-concept by <a href="https://about.me/bmthykm">Brian Mathiyakom</a>.
