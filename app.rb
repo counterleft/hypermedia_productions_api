@@ -108,7 +108,7 @@ def productions_view(productions, new_productions)
     json.links do |json|
       json.child! do |json|
         json.rel "root"
-        json.href "/"
+        json.href "/api"
       end
     end
   end
