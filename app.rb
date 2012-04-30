@@ -2,6 +2,8 @@ require 'sinatra'
 require 'jbuilder'
 require 'haml'
 require 'less'
+require './lib/production'
+require './lib/episode'
 
 # Fake production data
 # Since this is a proof-of-concept, we use a static dataset.
