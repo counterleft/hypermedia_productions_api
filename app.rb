@@ -74,6 +74,9 @@ def episodes_view(production)
         end
       end
     end
+    json.links do |json|
+      root_link(json)
+    end
   end
 end
 

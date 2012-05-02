@@ -81,18 +81,28 @@ describe "Productions API (app)" do
     actual[:productions].find { |p| p[:category].downcase == "music"}.should_not be_empty
   end
 
-  it "has access to a production's episodes" do
-    root_response = parse(last_response)
+  context "when accessing episodes" do
+    before do
+      root_response = parse(last_response)
 
-    episodes_link = root_response[:productions].first[:links].find { |l| l[:rel] == "episodes" }[:href]
-    get episodes_link
+      episodes_link = root_response[:productions].first[:links].find { |l| l[:rel] == "episodes" }[:href]
+      get episodes_link
+    end
 
-    actual = parse(last_response)
+    it "has access to a production's episodes" do
+      actual = parse(last_response)
+      actual[:episodes].should be_an(Array)
+      actual[:episodes].should have_at_least(1).items
+      actual[:episodes].first[:summary].should_not be_nil
+      actual[:episodes].first[:links].should be_an(Array)
+      actual[:episodes].first[:links].find { |l| l[:rel] == "video" }[:href].should_not be_nil
+    end
 
-    actual[:episodes].should be_an(Array)
-    actual[:episodes].should have_at_least(1).items
-    actual[:episodes].first[:summary].should_not be_nil
-    actual[:episodes].first[:links].should be_an(Array)
-    actual[:episodes].first[:links].find { |l| l[:rel] == "video" }[:href].should_not be_nil
+    it "has link back to root url" do
+      actual = parse(last_response)
+      actual[:links].find { |l| l[:rel] == "root" }.should_not be_nil
+    end
+
   end
+
 end
