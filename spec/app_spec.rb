@@ -4,16 +4,19 @@ require 'yajl'
 describe "Productions API (app)" do
   include Rack::Test::Methods
 
+  let(:media_type) { "application/vnd.brian.productions+json" }
+
   def app
     Sinatra::Application
   end
 
   def parse(last_response)
-    last_response.content_type.should == 'application/vnd.brian.productions+json'
+    last_response.content_type.should == media_type
     Yajl::Parser.parse(last_response.body, {symbolize_keys: true})
   end
 
   before do
+    header "Accept", media_type
     get '/api'
   end
 
@@ -33,6 +36,12 @@ describe "Productions API (app)" do
         episodes_link.should_not be_empty
         episodes_link[:href].should_not be_empty
       end
+    end
+
+    it "should only accept requests from proper media type" do
+      header "Accept", "text/html"
+      get '/api'
+      last_response.status.should == 400
     end
 
     it "has category filter form" do

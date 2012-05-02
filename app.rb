@@ -5,28 +5,10 @@ require 'less'
 require './lib/production'
 require './lib/episode'
 
-# Fake production data
-# Since this is a proof-of-concept, we use a static dataset.
-def production_data(category = nil)
-  productions = []
-  music = Production.new(category: "Music")
-
-  music.add_episode(Episode.new(summary: "Music Ep1 Summary", video_link: url("/production/music/video1")))
-  music.add_episode(Episode.new(summary: "Music Ep2 Summary", video_link: url("/production/music/video2")))
-  music.add_episode(Episode.new(summary: "Music Ep3 Summary", video_link: url("/production/music/video3")))
-
-  code = Production.new(category: "Code")
-
-  code.add_episode(Episode.new(summary: "Code Ep1 Summary", video_link: url("/production/code/video1")))
-  code.add_episode(Episode.new(summary: "Code Ep2 Summary", video_link: url("/production/code/video2")))
-  code.add_episode(Episode.new(summary: "Code Ep3 Summary", video_link: url("/production/code/video3")))
-
-  productions.push(music)
-  productions.push(code)
-
-  productions.select! { |p| p.category.downcase == category.downcase } if category
-
-  productions
+before do
+  if !request.accept? media_type
+    halt 400, "Client SHOULD have Accept header with API media type, \"#{media_type}\""
+  end
 end
 
 get '/docs' do
@@ -55,8 +37,36 @@ get '/api/production/:category' do
   episodes_view(production)
 end
 
+def media_type
+  "application/vnd.brian.productions+json"
+end
+
 def set_headers
-  headers "Content-type" => "application/vnd.brian.productions+json"
+  headers "Content-type" => media_type
+end
+
+# Fake production data
+# Since this is a proof-of-concept, we use a static dataset.
+def production_data(category = nil)
+  productions = []
+  music = Production.new(category: "Music")
+
+  music.add_episode(Episode.new(summary: "Music Ep1 Summary", video_link: url("/production/music/video1")))
+  music.add_episode(Episode.new(summary: "Music Ep2 Summary", video_link: url("/production/music/video2")))
+  music.add_episode(Episode.new(summary: "Music Ep3 Summary", video_link: url("/production/music/video3")))
+
+  code = Production.new(category: "Code")
+
+  code.add_episode(Episode.new(summary: "Code Ep1 Summary", video_link: url("/production/code/video1")))
+  code.add_episode(Episode.new(summary: "Code Ep2 Summary", video_link: url("/production/code/video2")))
+  code.add_episode(Episode.new(summary: "Code Ep3 Summary", video_link: url("/production/code/video3")))
+
+  productions.push(music)
+  productions.push(code)
+
+  productions.select! { |p| p.category.downcase == category.downcase } if category
+
+  productions
 end
 
 # TODO real code would probably extract all view code into its own class(es)
