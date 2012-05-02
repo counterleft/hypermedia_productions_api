@@ -11,15 +11,15 @@ def production_data(category = nil)
   productions = []
   music = Production.new(category: "Music")
 
-  music.add_episode(Episode.new(summary: "Music Ep1 Summary", video_link: "http://productions.com/music/video1"))
-  music.add_episode(Episode.new(summary: "Music Ep2 Summary", video_link: "http://productions.com/music/video2"))
-  music.add_episode(Episode.new(summary: "Music Ep3 Summary", video_link: "http://productions.com/music/video3"))
+  music.add_episode(Episode.new(summary: "Music Ep1 Summary", video_link: url("/production/music/video1")))
+  music.add_episode(Episode.new(summary: "Music Ep2 Summary", video_link: url("/production/music/video2")))
+  music.add_episode(Episode.new(summary: "Music Ep3 Summary", video_link: url("/production/music/video3")))
 
   code = Production.new(category: "Code")
 
-  code.add_episode(Episode.new(summary: "Code Ep1 Summary", video_link: "http://productions.com/code/video1"))
-  code.add_episode(Episode.new(summary: "Code Ep2 Summary", video_link: "http://productions.com/code/video2"))
-  code.add_episode(Episode.new(summary: "Code Ep3 Summary", video_link: "http://productions.com/code/video3"))
+  code.add_episode(Episode.new(summary: "Code Ep1 Summary", video_link: url("/production/code/video1")))
+  code.add_episode(Episode.new(summary: "Code Ep2 Summary", video_link: url("/production/code/video2")))
+  code.add_episode(Episode.new(summary: "Code Ep3 Summary", video_link: url("/production/code/video3")))
 
   productions.push(music)
   productions.push(code)
@@ -94,7 +94,7 @@ def productions_view(productions, new_productions)
     json.forms do |json|
       json.child! do |json|
         json.rel "category_filter"
-        json.href "/api/productions/filtered"
+        json.href url("/api/productions/filtered")
         json.method "get"
         json.data do |json|
           json.child! do |json|
@@ -106,11 +106,15 @@ def productions_view(productions, new_productions)
     end
 
     json.links do |json|
-      json.child! do |json|
-        json.rel "root"
-        json.href "/api"
-      end
+      root_link(json)
     end
+  end
+end
+
+def root_link(json)
+  json.child! do |json|
+    json.rel "root"
+    json.href url("/api")
   end
 end
 
@@ -119,7 +123,7 @@ def production_view(json, production)
     json.links do |json|
       json.child! do |json|
         json.rel "episodes"
-        json.href "/api/production/#{production.category.downcase}"
+        json.href url("/api/production/#{production.category.downcase}")
       end
     end
 end

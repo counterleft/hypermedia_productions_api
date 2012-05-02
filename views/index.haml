@@ -84,7 +84,7 @@
                   "links": [
                     {
                       "rel": "episodes",
-                      "href": "/api/production/music"
+                      "href": "http://example.org/api/production/music"
                     }
                   ]
                 },
@@ -93,7 +93,7 @@
                   "links": [
                     {
                       "rel": "episodes",
-                      "href": "/api/production/code"
+                      "href": "http://example.org/api/production/code"
                     }
                   ]
                 }
@@ -104,7 +104,7 @@
                   "links": [
                     {
                       "rel": "episodes",
-                      "href": "/api/production/code"
+                      "href": "http://example.org/api/production/code"
                     }
                   ]
                 }
@@ -112,7 +112,7 @@
               "forms": [
                 {
                   "rel": "category_filter",
-                  "href": "/api/productions/filtered",
+                  "href": "http://example.org/api/productions/filtered",
                   "method": "get",
                   "data": [
                     {
@@ -125,14 +125,23 @@
               "links": [
                 {
                   "rel": "root",
-                  "href": "/"
+                  "href": "http://example.org/api"
                 }
               ]
             }
 
-        %h3{id: "api[building-a-client]"} Building a Client
 
-        %p <em>TODO</em>
+        %h3{id: "api[building-a-client]"} Client Semantics
+
+        %p A client SHOULD set the <code>Accept</code> header to the media type defined for this API.
+
+        %p A client SHOULD hardcode only the entrypoint url of this API. Other functionaltiy should be found by following links through the API response.
+
+        %p It is RECOMMENDED to follow <code>link</code> objects through their <code>href</code> via HTTP GET.
+
+        %p The <code>form</code> objects provide the submission url through their <code>href</code>, their HTTP method through <code>method</code> and the possible input data through <code>data</code>. Each <code>data</code> consists of a <code>name</code> and <code>value</code>. The <code>name</code> is the parameter name.
+
+        %p A client MAY cache API responses.
 
         %h2 Thank You
 
